@@ -1,0 +1,26 @@
+{
+  "name": "pomodoro",
+  "version": "1.0.0",
+  "description": "Pomodoro App",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "parcel build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kustiche/Pomodoro.git"
+  },
+  "author": "Kustiche",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kustiche/Pomodoro/issues"
+  },
+  "homepage": "https://github.com/Kustiche/Pomodoro#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@parcel/transformer-sass": "^2.15.4",
+    "eslint": "^9.29.0",
+    "globals": "^16.2.0",
+    "parcel": "^2.15.4"
+  }
+}

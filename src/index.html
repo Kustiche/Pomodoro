@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pomodoro</title>
+  <link rel="stylesheet" href="style.scss">
+</head>
+
+<body>
+  <main>
+    <section class="section">
+      <div class="container">
+        <div class="pomodoro">
+          <div class="pomodoro__wrap">
+            <p class="pomodoro__timer">25:00</p>
+            <div class="pomodoro__functional functional">
+              <button class="functional__start pomodoro-btn btn-reset">Start</button>
+              <button class="functional__reset pomodoro-btn btn-reset">Reset</button>
+              <button class="functional__settings pomodoro-btn btn-reset">Settings</button>
+            </div>
+            <div class="pomodoro__types-timers types-timers">
+              <button class="types-timers__pomodoro pomodoro-btn btn-reset">Pomodoro</button>
+              <button class="types-timers__short pomodoro-btn btn-reset">Short</button>
+              <button class="types-timers__long pomodoro-btn btn-reset">Long</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="js/main.js"></script>
+</body>
+
+</html>
