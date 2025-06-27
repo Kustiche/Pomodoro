@@ -18,7 +18,8 @@
             <div class="pomodoro__functional functional">
               <button class="functional__start pomodoro-btn btn-reset">Start</button>
               <button class="functional__reset pomodoro-btn btn-reset">Reset</button>
-              <button class="functional__settings pomodoro-btn btn-reset">Settings</button>
+              <button class="functional__settings pomodoro-btn btn-reset"
+                onclick="window.modalSettings.showModal()">Settings</button>
             </div>
             <div class="pomodoro__types-timers types-timers">
               <button class="types-timers__pomodoro pomodoro-btn btn-reset">Pomodoro</button>
@@ -30,7 +31,31 @@
       </div>
     </section>
   </main>
-  <script type="module" src="js/main.js"></script>
+  <dialog class="settings" id="modalSettings">
+    <div class="settings__wrap">
+      <h2 class="settings__title">Settings</h2>
+      <form class="form" action="#">
+        <div class="form__inner">
+          <label class="form__label" for="pomodoro">Pomodoro <span>(minutes)</span></label>
+          <input class="form__input-pomodoro" id="pomodoro" type="number" value="25" required>
+        </div>
+        <div class="form__inner">
+          <label class="form__label" for="short">Short Break <span>(minutes)</span></label>
+          <input class="form__input-short" id="short" type="number" value="5" required>
+        </div>
+        <div class="form__inner">
+          <label class="form__label" for="long">Long Break <span>(minutes)</span></label>
+          <input class="form__input-long" id="long" type="number" value="15" required>
+        </div>
+        <div class="form__buttons">
+          <button class="form__save pomodoro-btn btn-reset">Save</button>
+          <button class="form__close pomodoro-btn btn-reset" type="button"
+            onclick="window.modalSettings.close()">Close</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+  <script type=" module" src="js/main.js"></script>
 </body>
 
 </html>

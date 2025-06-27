@@ -82,3 +82,15 @@ body {
     margin-bottom: 20px;
   }
 }
+
+.settings {
+  padding: 0;
+  border: none;
+  color: var(--light-color);
+  background-color: var(--black-color);
+
+  &__wrap {
+    display: flex;
+    flex-direction: column;
+  }
+}
