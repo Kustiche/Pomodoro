@@ -7,6 +7,8 @@ class Pomodoro {
     this.minutes = 0;
     this.seconds = 0;
     this.interval = null;
+    this.typeTimer = 'pomodoro';
+    this.numIterations = 0;
 
     this.timer = document.querySelector('.pomodoro__timer');
     this.btnStart = document.querySelector('.functional__start');
@@ -70,17 +72,46 @@ class Pomodoro {
 
       if (this.seconds === 0 && this.minutes !== 0) {
         this.minutes = --this.minutes;
-        this.seconds = 59;
+        this.seconds = 10;
       } else if (this.seconds !== 0) {
         this.seconds = --this.seconds;
       } else if (this.minutes === 0 && this.seconds === 0) {
         this.timer.textContent = `${minutes}:${seconds}`;
 
-        clearInterval(this.interval);
+        this.switchTimer(this.typeTimer);
       }
 
       this.timer.textContent = `${minutes}:${seconds}`;
     }, 100);
+  }
+
+  switchTimer(type) {
+    if (type === 'pomodoro') {
+      if (this.numIterations !== 3) {
+        this.typeTimer = 'short';
+        this.minutes = this.short;
+      } else {
+        this.typeTimer = 'long';
+        this.minutes = this.long;
+      }
+
+      this.stop();
+      this.start();
+    } else if (type === 'short') {
+      ++this.numIterations;
+      this.typeTimer = 'pomodoro';
+      this.minutes = this.pomodoro;
+
+      this.stop();
+      this.start();
+    } else if (type === 'long') {
+      this.typeTimer = 'pomodoro';
+      this.minutes = this.pomodoro;
+      this.numIterations = 0;
+
+      this.stop();
+      this.start();
+    }
   }
 
   stop() {
@@ -88,6 +119,8 @@ class Pomodoro {
   }
 
   updateMinutes() {
+    this.typeTimer = 'pomodoro';
+    this.numIterations = 0;
     this.minutes = this.pomodoro;
     this.seconds = 0;
 
@@ -113,4 +146,4 @@ class Pomodoro {
   }
 }
 
-new Pomodoro(25, 5, 15);
+new Pomodoro(1, 2, 3);
