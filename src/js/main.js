@@ -72,7 +72,7 @@ class Pomodoro {
 
       if (this.seconds === 0 && this.minutes !== 0) {
         this.minutes = --this.minutes;
-        this.seconds = 10;
+        this.seconds = 59;
       } else if (this.seconds !== 0) {
         this.seconds = --this.seconds;
       } else if (this.minutes === 0 && this.seconds === 0) {
@@ -82,7 +82,7 @@ class Pomodoro {
       }
 
       this.timer.textContent = `${minutes}:${seconds}`;
-    }, 100);
+    }, 1000);
   }
 
   switchTimer(type) {
@@ -146,4 +146,4 @@ class Pomodoro {
   }
 }
 
-new Pomodoro(1, 2, 3);
+new Pomodoro(25, 5, 15);
