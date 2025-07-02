@@ -76,6 +76,28 @@ body {
   }
 }
 
+.notification {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  max-width: 200px;
+  width: 100%;
+  border-radius: 0 0 5px 5px;
+  background-color: var(--mojo-color);
+  top: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: top 0.4s;
+
+  &.active {
+    top: 0;
+  }
+
+  &__text {
+    font-size: 20px;
+  }
+}
+
 .pomodoro {
   &__wrap {
     display: flex;

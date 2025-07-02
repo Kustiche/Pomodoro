@@ -22,6 +22,8 @@ class Pomodoro {
     this.btnShort = document.querySelector('.types-timers__short');
     this.btnLong = document.querySelector('.types-timers__long');
     this.innerTypesTimers = document.querySelector('.pomodoro__types-timers');
+    this.notification = document.querySelector('.notification');
+    this.notificationText = document.querySelector('.notification__text');
 
     this.btnsPomodoro = document.querySelectorAll('.pomodoro-btn');
 
@@ -49,6 +51,7 @@ class Pomodoro {
     this.btnReset.addEventListener('click', () => {
       this.updateMinutes('pomodoro');
       this.stop();
+      this.renderBtnTypesTimers();
 
       this.btnStart.classList.remove('active');
     });
@@ -62,13 +65,26 @@ class Pomodoro {
     this.form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      this.saveValuesInputs();
-      this.updateParameters();
-      this.updateMinutes();
-      this.stop();
-      this.closeModal();
+      const isInputsValue = this.inputPomodoro.value < 0 || this.inputShort < 0 || this.inputLong < 0;
 
-      this.btnStart.classList.remove('active');
+      try {
+        if (isInputsValue) {
+          throw new Error('Incorrect number');
+        }
+
+        this.saveValuesInputs();
+        this.updateParameters();
+        this.updateMinutes('pomodoro');
+        this.renderTimer();
+        this.stop();
+        this.closeModal();
+
+        this.btnStart.classList.remove('active');
+      } catch (err) {
+        this.showNotification(err);
+
+        this.closeModal();
+      }
     });
 
     this.innerTypesTimers.addEventListener('click', (e) => {
@@ -226,6 +242,17 @@ class Pomodoro {
 
   closeModal() {
     this.modalSettings.close();
+  }
+
+  showNotification(err) {
+    this.notificationText.textContent = `${err.name}: ${err.message}`;
+
+    this.notification.classList.remove('active');
+    this.notification.classList.add('active');
+
+    setTimeout(() => {
+      this.notification.classList.remove('active');
+    }, 3000);
   }
 }
 
