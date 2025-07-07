@@ -15,9 +15,9 @@ class Pomodoro {
     this.btnStart = document.querySelector('.functional__start');
     this.btnReset = document.querySelector('.functional__reset');
     this.form = document.querySelector('.form');
-    this.inputPomodoro = document.querySelector('.form__input-pomodoro');
-    this.inputShort = document.querySelector('.form__input-short');
-    this.inputLong = document.querySelector('.form__input-long');
+    this.inputPomodoro = document.getElementById('pomodoro');
+    this.inputShort = document.getElementById('short');
+    this.inputLong = document.getElementById('long');
     this.btnPomodoro = document.querySelector('.types-timers__pomodoro');
     this.btnShort = document.querySelector('.types-timers__short');
     this.btnLong = document.querySelector('.types-timers__long');
@@ -221,15 +221,15 @@ class Pomodoro {
   }
 
   updateParameters() {
-    this.pomodoro = this.inputPomodoro.value;
-    this.short = this.inputShort.value;
-    this.long = this.inputLong.value;
+    this.pomodoro = this.inputPomodoro.value > 999 ? 999 : this.inputPomodoro.value;
+    this.short = this.inputShort.value > 999 ? 999 : this.inputShort.value;
+    this.long = this.inputLong.value > 999 ? 999 : this.inputLong.value;
   }
 
   saveValuesInputs() {
-    localStorage.setItem('pomodoroValue', JSON.stringify(this.inputPomodoro.value));
-    localStorage.setItem('shortValue', JSON.stringify(this.inputShort.value));
-    localStorage.setItem('longValue', JSON.stringify(this.inputLong.value));
+    localStorage.setItem('pomodoroValue', JSON.stringify(this.inputPomodoro.value > 999 ? 999 : this.inputPomodoro.value));
+    localStorage.setItem('shortValue', JSON.stringify(this.inputShort.value > 999 ? 999 : this.inputShort.value));
+    localStorage.setItem('longValue', JSON.stringify(this.inputLong.value > 999 ? 999 : this.inputLong.value));
   }
 
   closeModal() {
