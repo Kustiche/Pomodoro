@@ -51,13 +51,15 @@ class Pomodoro {
     this.btnReset.addEventListener('click', () => {
       this.updateMinutes('pomodoro');
       this.stop();
-      this.renderBtnTypesTimers();
+      this.changeActiveButton(this.btnPomodoro);
 
       this.btnStart.classList.remove('active');
     });
 
     this.modalSettings.addEventListener('click', (e) => {
-      if (e.target.closest('.settings__wrap') === null) {
+      const isTargetWrap = e.target.closest('.settings__wrap') === null;
+
+      if (isTargetWrap) {
         this.closeModal();
       }
     });
@@ -65,7 +67,7 @@ class Pomodoro {
     this.form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const isInputsValue = this.inputPomodoro.value < 0 || this.inputShort < 0 || this.inputLong < 0;
+      const isInputsValue = this.inputPomodoro.value < 1 || this.inputShort.value < 1 || this.inputLong.value < 1;
 
       try {
         if (isInputsValue) {
@@ -88,33 +90,19 @@ class Pomodoro {
     });
 
     this.innerTypesTimers.addEventListener('click', (e) => {
-      const isBtnPomodoro = e.target === this.btnPomodoro;
-      const isBtnShort = e.target === this.btnShort;
-      const isBtnLong = e.target === this.btnLong;
-
-      this.btnsPomodoro.forEach((el) => {
-        el.classList.remove('activeTimer');
-      });
+      const isBtnPomodoro = e.target === this.btnPomodoro && e.target.textContent.toLowerCase() !== this.typeTimer;
+      const isBtnShort = e.target === this.btnShort && e.target.textContent.toLowerCase() !== this.typeTimer;
+      const isBtnLong = e.target === this.btnLong && e.target.textContent.toLowerCase() !== this.typeTimer;
 
       if (isBtnPomodoro) {
-        this.btnPomodoro.classList.add('activeTimer');
-
-        this.switchTimer('pomodoro');
-        this.updateMinutes('pomodoro');
+        this.changeActiveButton(this.btnPomodoro, 'pomodoro', true);
       } else if (isBtnShort) {
-        this.btnShort.classList.add('activeTimer');
-
-        this.switchTimer('short');
-        this.updateMinutes('short');
+        this.changeActiveButton(this.btnShort, 'short', true);
       } else if (isBtnLong) {
-        this.btnLong.classList.add('activeTimer');
-
-        this.switchTimer('long');
-        this.updateMinutes('long');
+        this.changeActiveButton(this.btnLong, 'pomodoro', true);
       }
 
       this.stop();
-      this.renderBtnTypesTimers();
       this.btnStart.classList.remove('active');
     });
   }
@@ -169,7 +157,12 @@ class Pomodoro {
 
         break;
       case 'short':
-        if (this.numShiftsTimers === 0 && this.numShiftsTimers === 2) {
+        if (this.numShiftsTimers === 0) {
+          this.typeTimer = 'short';
+          this.minutes = this.short;
+
+          ++this.numShiftsTimers;
+        } else if (this.numShiftsTimers === 2) {
           this.typeTimer = 'short';
           this.minutes = this.short;
 
@@ -191,20 +184,19 @@ class Pomodoro {
         break;
     }
 
-    this.renderBtnTypesTimers();
-  }
+    switch (this.typeTimer) {
+      case 'pomodoro':
+        this.changeActiveButton(this.btnPomodoro);
 
-  renderBtnTypesTimers() {
-    this.btnsPomodoro.forEach((el) => {
-      el.classList.remove('activeTimer');
-    });
+        break;
+      case 'short':
+        this.changeActiveButton(this.btnShort);
 
-    if (this.typeTimer === 'pomodoro') {
-      this.btnPomodoro.classList.add('activeTimer');
-    } else if (this.typeTimer === 'short') {
-      this.btnShort.classList.add('activeTimer');
-    } else if (this.typeTimer === 'long') {
-      this.btnLong.classList.add('activeTimer');
+        break;
+      case 'long':
+        this.changeActiveButton(this.btnLong);
+
+        break;
     }
   }
 
@@ -253,6 +245,23 @@ class Pomodoro {
     setTimeout(() => {
       this.notification.classList.remove('active');
     }, 3000);
+  }
+
+  changeActiveButton(btn, typeTimer = null, click = false) {
+    this.removeClassActiveTimer();
+
+    btn.classList.add('activeTimer');
+
+    if (click) {
+      this.switchTimer(typeTimer);
+      this.updateMinutes(typeTimer);
+    }
+  }
+
+  removeClassActiveTimer() {
+    this.btnsPomodoro.forEach((el) => {
+      el.classList.remove('activeTimer');
+    });
   }
 }
 
