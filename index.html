@@ -1,0 +1,65 @@
+<!DOCTYPE html><html lang=en><meta charset=UTF-8><meta name=viewport content="width=device-width, initial-scale=1.0"><title>Pomodoro</title><link rel=stylesheet href=/Pomodoro.5ee7e869.css><body>
+  <div class=notification>
+    <p class=notification__text>Error: Incorect number</p>
+  </div>
+  <main>
+    <section class=section>
+      <div class=container>
+        <div class=pomodoro>
+          <div class=pomodoro__wrap>
+
+            <div class=pomodoro__timer-container>
+              <p class=pomodoro__timer>25:00</p>
+            </div>
+
+            <div class="functional pomodoro__functional">
+              <button class="btn-reset functional__start pomodoro-btn">
+                <svg class=functional__icon><use href=/sprite.cf62e13d.svg#start /></svg>
+              </button>
+              <button class="btn-reset functional__reset pomodoro-btn">
+                <svg class=functional__icon><use href=/sprite.cf62e13d.svg#reset /></svg></button>
+              <button class="btn-reset functional__settings pomodoro-btn" onclick=window.modalSettings.showModal()>
+                <svg class=functional__icon><use href=/sprite.cf62e13d.svg#settings /></svg></button>
+            </div>
+
+            <div class="pomodoro__types-timers types-timers">
+              <button class="activeTimer btn-reset pomodoro-btn types-timers__pomodoro">Pomodoro</button>
+              <button class="btn-reset pomodoro-btn types-timers__short">Short</button>
+              <button class="btn-reset pomodoro-btn types-timers__long">Long</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog class=settings id=modalSettings>
+    <div class=settings__wrap>
+      <h2 class=settings__title>Settings</h2>
+      <form class=form action=#>
+        <div class=form__content>
+          <div class=form__inner>
+            <label class=form__label for=pomodoro>Pomodoro <span>(minutes)</span></label>
+            <input class=form__input id=pomodoro type=number value=25 required>
+          </div>
+          <div class=form__inner>
+            <label class=form__label for=short>Short Break <span>(minutes)</span></label>
+            <input class=form__input id=short type=number value=5 required>
+          </div>
+          <div class=form__inner>
+            <label class=form__label for=long>Long Break <span>(minutes)</span></label>
+            <input class=form__input id=long type=number value=15 required>
+          </div>
+
+        </div>
+        <div class=form__buttons>
+          <button class="btn-reset form__save pomodoro-btn">Save</button>
+          <button class="btn-reset form__close pomodoro-btn" type=button onclick=window.modalSettings.close()>Close</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+  <script src=/Pomodoro.5ba67a7c.js></script>
+
+
