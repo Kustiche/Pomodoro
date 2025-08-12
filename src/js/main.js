@@ -119,7 +119,7 @@ class Pomodoro {
 
         this.renderTimer();
       }
-    }, 10);
+    }, 1000);
   }
 
   calculationTiming() {
@@ -238,4 +238,4 @@ class Pomodoro {
   }
 }
 
-new Pomodoro(5, 3, 7);
+new Pomodoro(25, 5, 15);
