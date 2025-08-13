@@ -4,11 +4,14 @@ class Pomodoro {
     this.short = JSON.parse(localStorage.getItem('shortValue')) ?? short * 60;
     this.long = JSON.parse(localStorage.getItem('longValue')) ?? long * 60;
 
+    this.totalTime = this.pomodoro;
     this.seconds = 0;
     this.interval = null;
     this.typeTimer = 'pomodoro';
     this.numIterations = 0;
+    this.circumference = 2 * Math.PI * 145;
 
+    this.progressCircle = document.querySelector('.pomodoro__timer-progress');
     this.timer = document.querySelector('.pomodoro__timer');
     this.btnStart = document.querySelector('.functional__start');
     this.btnReset = document.querySelector('.functional__reset');
@@ -45,6 +48,8 @@ class Pomodoro {
     });
 
     this.btnReset.addEventListener('click', () => {
+      this.progressCircle.style.strokeDashoffset = 0;
+
       this.updateSeconds('pomodoro');
       this.stop();
       this.changeActiveButton(this.btnPomodoro);
@@ -79,6 +84,7 @@ class Pomodoro {
         this.closeModal();
 
         this.btnStart.classList.remove('active');
+        this.progressCircle.style.strokeDashoffset = 0;
       } catch (err) {
         this.showNotification(err);
 
@@ -102,6 +108,7 @@ class Pomodoro {
       }
 
       if (isNoInnerTypesTimers) {
+        this.progressCircle.style.strokeDashoffset = 0;
         this.stop();
         this.btnStart.classList.remove('active');
       }
@@ -119,6 +126,9 @@ class Pomodoro {
 
         this.renderTimer();
       }
+
+      const offset = this.circumference - (this.seconds / this.totalTime) * this.circumference;
+      this.progressCircle.style.strokeDashoffset = offset;
     }, 1000);
   }
 
@@ -140,10 +150,12 @@ class Pomodoro {
         this.numIterations = ++this.numIterations;
         this.seconds = this.short;
         this.typeTimer = 'short';
+        this.totalTime = this.short;
 
         if (this.numIterations === 4) {
           this.seconds = this.long;
           this.typeTimer = 'long';
+          this.totalTime = this.long;
           this.numIterations = 0;
         }
 
@@ -151,11 +163,13 @@ class Pomodoro {
       case 'short':
         this.seconds = this.pomodoro;
         this.typeTimer = 'pomodoro';
+        this.totalTime = this.pomodoro;
 
         break;
       case 'long':
         this.seconds = this.pomodoro;
         this.typeTimer = 'pomodoro';
+        this.totalTime = this.pomodoro;
 
         break;
     }
@@ -233,6 +247,7 @@ class Pomodoro {
     btn.classList.add('activeTimer');
 
     if (click) {
+      this.totalTime = this[typeTimer];
       this.updateSeconds(typeTimer);
     }
   }
