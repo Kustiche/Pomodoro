@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pomodoro</title>
-  <link rel="stylesheet" href="style.scss">
+  <link rel="stylesheet" href="./style.scss">
 </head>
 
 <body>
@@ -29,16 +29,16 @@
             <div class="pomodoro__functional functional">
               <button class="functional__start pomodoro-btn btn-reset">
                 <svg class="functional__icon">
-                  <use href="sprite.svg#start"></use>
+                  <use href="./sprite.svg#pause"></use>
                 </svg>
               </button>
               <button class="functional__reset pomodoro-btn btn-reset">
                 <svg class="functional__icon">
-                  <use href="sprite.svg#reset"></use>
+                  <use href="./sprite.svg#reset"></use>
                 </svg></button>
               <button class="functional__settings pomodoro-btn btn-reset" onclick="window.modalSettings.showModal()">
                 <svg class="functional__icon">
-                  <use href="sprite.svg#settings"></use>
+                  <use href="./sprite.svg#settings"></use>
                 </svg></button>
             </div>
 
@@ -81,7 +81,7 @@
       </form>
     </div>
   </dialog>
-  <script type=" module" src="js/main.js"></script>
+  <script type=" module" src="./js/main.js"></script>
 </body>
 
 </html>

@@ -19,6 +19,7 @@ class Pomodoro {
     this.inputPomodoro = document.getElementById('pomodoro');
     this.inputShort = document.getElementById('short');
     this.inputLong = document.getElementById('long');
+    this.btnCloseForm = document.querySelector('.form__close');
     this.btnPomodoro = document.querySelector('.types-timers__pomodoro');
     this.btnShort = document.querySelector('.types-timers__short');
     this.btnLong = document.querySelector('.types-timers__long');
@@ -41,9 +42,11 @@ class Pomodoro {
       if (isClassActive) {
         this.btnStart.classList.remove('active');
         this.stop();
+        this.changeIcon(false);
       } else {
         this.btnStart.classList.add('active');
         this.start();
+        this.changeIcon(true);
       }
     });
 
@@ -55,6 +58,7 @@ class Pomodoro {
       this.changeActiveButton(this.btnPomodoro);
 
       this.btnStart.classList.remove('active');
+      this.changeIcon(false);
     });
 
     this.modalSettings.addEventListener('click', (e) => {
@@ -76,7 +80,7 @@ class Pomodoro {
         }
 
         this.saveParameters();
-        this.updateParameters();
+        this.updateParameters(true);
         this.updateSeconds('pomodoro');
         this.changeActiveButton(this.btnPomodoro);
         this.renderTimer();
@@ -84,6 +88,7 @@ class Pomodoro {
         this.closeModal();
 
         this.btnStart.classList.remove('active');
+        this.changeIcon(false);
         this.progressCircle.style.strokeDashoffset = 0;
       } catch (err) {
         this.showNotification(err);
@@ -92,27 +97,49 @@ class Pomodoro {
       }
     });
 
+    this.btnCloseForm.addEventListener('click', () => {
+      this.updateParameters(false);
+    });
+
     this.innerTypesTimers.addEventListener('click', (e) => {
       const isNoInnerTypesTimers = e.target !== this.innerTypesTimers;
+      const isActiveTimer = e.target.classList.contains('activeTimer');
 
-      switch (e.target) {
-        case this.btnPomodoro:
-          this.changeActiveButton(this.btnPomodoro, 'pomodoro', true);
-          break;
-        case this.btnShort:
-          this.changeActiveButton(this.btnShort, 'short', true);
-          break;
-        case this.btnLong:
-          this.changeActiveButton(this.btnLong, 'long', true);
-          break;
-      }
+      if (isActiveTimer) {
+        return;
+      } else {
+        switch (e.target) {
+          case this.btnPomodoro:
+            this.changeActiveButton(this.btnPomodoro, 'pomodoro', true);
+            break;
+          case this.btnShort:
+            this.changeActiveButton(this.btnShort, 'short', true);
+            break;
+          case this.btnLong:
+            this.changeActiveButton(this.btnLong, 'long', true);
+            break;
+        }
 
-      if (isNoInnerTypesTimers) {
-        this.progressCircle.style.strokeDashoffset = 0;
-        this.stop();
-        this.btnStart.classList.remove('active');
+        if (isNoInnerTypesTimers) {
+          this.progressCircle.style.strokeDashoffset = 0;
+          this.stop();
+          this.btnStart.classList.remove('active');
+          this.changeIcon(false);
+        }
       }
     });
+  }
+
+  changeIcon(active) {
+    const use = document.querySelector('use');
+    const useHref = use.getAttribute('href');
+    const spritePath = useHref.split('#')[0];
+
+    if (active) {
+      this.btnStart.innerHTML = `<svg class="functional__icon"><use href="${spritePath}#start"></use></svg>`;
+    } else {
+      this.btnStart.innerHTML = `<svg class="functional__icon"><use href="${spritePath}#pause"></use></svg>`;
+    }
   }
 
   start() {
@@ -198,6 +225,7 @@ class Pomodoro {
     this.typeTimer = type;
     this.numIterations = 0;
     this.seconds = this[type];
+    this.totalTime = this[type];
 
     this.renderTimer();
   }
@@ -208,10 +236,22 @@ class Pomodoro {
     return result;
   }
 
-  updateParameters() {
-    this.pomodoro = this.calculationSecondsParameters(this.inputPomodoro.value);
-    this.short = this.calculationSecondsParameters(this.inputShort.value);
-    this.long = this.calculationSecondsParameters(this.inputLong.value);
+  distributionParameters() {
+    this.inputPomodoro.value = JSON.parse(localStorage.getItem('pomodoroValue')) / 60;
+    this.inputShort.value = JSON.parse(localStorage.getItem('shortValue')) / 60;
+    this.inputLong.value = JSON.parse(localStorage.getItem('longValue')) / 60;
+  }
+
+  updateParameters(permission) {
+    if (permission) {
+      this.pomodoro = this.calculationSecondsParameters(this.inputPomodoro.value);
+      this.short = this.calculationSecondsParameters(this.inputShort.value);
+      this.long = this.calculationSecondsParameters(this.inputLong.value);
+
+      this.totalTime = this[this.typeTimer];
+    }
+
+    this.distributionParameters();
   }
 
   saveParameters() {
@@ -247,6 +287,7 @@ class Pomodoro {
     btn.classList.add('activeTimer');
 
     if (click) {
+      this.typeTimer = typeTimer;
       this.totalTime = this[typeTimer];
       this.updateSeconds(typeTimer);
     }
