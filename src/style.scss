@@ -217,6 +217,10 @@ body {
   color: var(--light-color);
   background-color: var(--black-color);
 
+  &::backdrop {
+    background-color: rgba(50, 50, 50, 0.6);
+  }
+
   &__wrap {
     display: flex;
     flex-direction: column;
