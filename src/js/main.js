@@ -1,5 +1,8 @@
 class Pomodoro {
   constructor(pomodoro, short, long) {
+    this.TIMER_INTERVAL = 1000;
+    this.NOTIFICATION_DURATION = 3000;
+
     this.pomodoro = JSON.parse(localStorage.getItem('pomodoroValue')) ?? pomodoro * 60;
     this.short = JSON.parse(localStorage.getItem('shortValue')) ?? short * 60;
     this.long = JSON.parse(localStorage.getItem('longValue')) ?? long * 60;
@@ -33,6 +36,7 @@ class Pomodoro {
 
     this.startListeners();
     this.updateSeconds('pomodoro');
+    this.distributionParameters();
   }
 
   startListeners() {
@@ -62,9 +66,9 @@ class Pomodoro {
     });
 
     this.modalSettings.addEventListener('click', (e) => {
-      const isTargetWrap = e.target.closest('.settings__wrap') === null;
+      const isNoTargetWrap = e.target.closest('.settings__wrap') === null;
 
-      if (isTargetWrap) {
+      if (isNoTargetWrap) {
         this.closeModal();
       }
     });
@@ -92,6 +96,7 @@ class Pomodoro {
         this.progressCircle.style.strokeDashoffset = 0;
       } catch (err) {
         this.showNotification(err);
+        this.distributionParameters();
 
         this.closeModal();
       }
@@ -103,9 +108,9 @@ class Pomodoro {
 
     this.innerTypesTimers.addEventListener('click', (e) => {
       const isNoInnerTypesTimers = e.target !== this.innerTypesTimers;
-      const isActiveTimer = e.target.classList.contains('activeTimer');
+      const isClassActiveTimer = e.target.classList.contains('activeTimer');
 
-      if (isActiveTimer) {
+      if (isClassActiveTimer) {
         return;
       } else {
         switch (e.target) {
@@ -156,7 +161,7 @@ class Pomodoro {
 
       const offset = this.circumference - (this.seconds / this.totalTime) * this.circumference;
       this.progressCircle.style.strokeDashoffset = offset;
-    }, 1000);
+    }, this.TIMER_INTERVAL);
   }
 
   calculationTiming() {
@@ -237,9 +242,9 @@ class Pomodoro {
   }
 
   distributionParameters() {
-    this.inputPomodoro.value = JSON.parse(localStorage.getItem('pomodoroValue')) / 60;
-    this.inputShort.value = JSON.parse(localStorage.getItem('shortValue')) / 60;
-    this.inputLong.value = JSON.parse(localStorage.getItem('longValue')) / 60;
+    this.inputPomodoro.value = this.pomodoro / 60;
+    this.inputShort.value = this.short / 60;
+    this.inputLong.value = this.long / 60;
   }
 
   updateParameters(permission) {
@@ -272,7 +277,7 @@ class Pomodoro {
 
     setTimeout(() => {
       this.notification.classList.remove('active');
-    }, 3000);
+    }, this.NOTIFICATION_DURATION);
   }
 
   removeClassActiveTimer() {
