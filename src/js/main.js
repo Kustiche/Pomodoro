@@ -35,8 +35,9 @@ class Pomodoro {
     this.modalSettings = document.querySelector('#modalSettings');
 
     this.startListeners();
-    this.updateSeconds('pomodoro');
+    this.updateTimer('pomodoro');
     this.distributionParameters();
+    this.changeTitleSite();
   }
 
   startListeners() {
@@ -57,18 +58,20 @@ class Pomodoro {
     this.btnReset.addEventListener('click', () => {
       this.progressCircle.style.strokeDashoffset = 0;
 
-      this.updateSeconds('pomodoro');
+      this.updateTimer('pomodoro');
       this.stop();
       this.changeActiveButton(this.btnPomodoro);
 
       this.btnStart.classList.remove('active');
       this.changeIcon(false);
+      this.changeTitleSite();
     });
 
     this.modalSettings.addEventListener('click', (e) => {
-      const isNoTargetWrap = e.target.closest('.settings__wrap') === null;
+      const isModalWrap = e.target.closest('.settings__wrap');
 
-      if (isNoTargetWrap) {
+      if (!isModalWrap) {
+        this.distributionParameters();
         this.closeModal();
       }
     });
@@ -76,63 +79,77 @@ class Pomodoro {
     this.form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const isInputsValue = this.inputPomodoro.value < 1 || this.inputShort.value < 1 || this.inputLong.value < 1;
+      const isPositiveValue = this.inputPomodoro.value < 1 || this.inputShort.value < 1 || this.inputLong.value < 1;
 
       try {
-        if (isInputsValue) {
+        if (isPositiveValue) {
           throw new Error('Incorrect number');
         }
 
         this.saveParameters();
-        this.updateParameters(true);
-        this.updateSeconds('pomodoro');
+        this.updateParameters();
+        this.updateTimer('pomodoro');
         this.changeActiveButton(this.btnPomodoro);
         this.renderTimer();
         this.stop();
-        this.closeModal();
 
         this.btnStart.classList.remove('active');
         this.changeIcon(false);
         this.progressCircle.style.strokeDashoffset = 0;
+        this.changeTitleSite();
       } catch (err) {
         this.showNotification(err);
         this.distributionParameters();
-
-        this.closeModal();
       }
+
+      this.closeModal();
     });
 
     this.btnCloseForm.addEventListener('click', () => {
-      this.updateParameters(false);
+      this.distributionParameters();
     });
 
     this.innerTypesTimers.addEventListener('click', (e) => {
-      const isNoInnerTypesTimers = e.target !== this.innerTypesTimers;
+      const isNotContainer = e.target !== this.innerTypesTimers;
       const isClassActiveTimer = e.target.classList.contains('activeTimer');
 
-      if (isClassActiveTimer) {
-        return;
-      } else {
+      if (isNotContainer && !isClassActiveTimer) {
         switch (e.target) {
           case this.btnPomodoro:
             this.changeActiveButton(this.btnPomodoro, 'pomodoro', true);
+            this.updateTimer('pomodoro');
             break;
           case this.btnShort:
             this.changeActiveButton(this.btnShort, 'short', true);
+            this.updateTimer('short');
             break;
           case this.btnLong:
             this.changeActiveButton(this.btnLong, 'long', true);
+            this.updateTimer('long');
             break;
         }
 
-        if (isNoInnerTypesTimers) {
-          this.progressCircle.style.strokeDashoffset = 0;
-          this.stop();
-          this.btnStart.classList.remove('active');
-          this.changeIcon(false);
-        }
+        this.progressCircle.style.strokeDashoffset = 0;
+        this.stop();
+        this.btnStart.classList.remove('active');
+        this.changeIcon(false);
+        this.changeTitleSite();
       }
     });
+  }
+
+  changeTitleSite() {
+    document.title = `${this.getTimerEmoji(this.typeTimer)} ${this.calculationTiming()} | Pomodoro`;
+  }
+
+  getTimerEmoji(type) {
+    const emojis = {
+      pomodoro: '🔴',
+      short: '🟡',
+      long: '🟢',
+    };
+
+    return emojis[type];
   }
 
   changeIcon(active) {
@@ -150,13 +167,12 @@ class Pomodoro {
   start() {
     this.interval = setInterval(() => {
       if (this.seconds === 0) {
-        this.renderTimer();
-
         this.switchTimer(this.typeTimer);
       } else {
         this.seconds = --this.seconds;
 
         this.renderTimer();
+        this.changeTitleSite();
       }
 
       const offset = this.circumference - (this.seconds / this.totalTime) * this.circumference;
@@ -177,33 +193,22 @@ class Pomodoro {
   }
 
   switchTimer(type) {
-    switch (type) {
-      case 'pomodoro':
-        this.numIterations = ++this.numIterations;
-        this.seconds = this.short;
-        this.typeTimer = 'short';
-        this.totalTime = this.short;
+    if (type === 'pomodoro') {
+      this.numIterations = ++this.numIterations;
+      this.seconds = this.short;
+      this.typeTimer = 'short';
+      this.totalTime = this.short;
 
-        if (this.numIterations === 4) {
-          this.seconds = this.long;
-          this.typeTimer = 'long';
-          this.totalTime = this.long;
-          this.numIterations = 0;
-        }
-
-        break;
-      case 'short':
-        this.seconds = this.pomodoro;
-        this.typeTimer = 'pomodoro';
-        this.totalTime = this.pomodoro;
-
-        break;
-      case 'long':
-        this.seconds = this.pomodoro;
-        this.typeTimer = 'pomodoro';
-        this.totalTime = this.pomodoro;
-
-        break;
+      if (this.numIterations === 4) {
+        this.seconds = this.long;
+        this.typeTimer = 'long';
+        this.totalTime = this.long;
+        this.numIterations = 0;
+      }
+    } else {
+      this.seconds = this.pomodoro;
+      this.typeTimer = 'pomodoro';
+      this.totalTime = this.pomodoro;
     }
 
     switch (this.typeTimer) {
@@ -226,7 +231,7 @@ class Pomodoro {
     clearInterval(this.interval);
   }
 
-  updateSeconds(type) {
+  updateTimer(type) {
     this.typeTimer = type;
     this.numIterations = 0;
     this.seconds = this[type];
@@ -235,8 +240,8 @@ class Pomodoro {
     this.renderTimer();
   }
 
-  calculationSecondsParameters(type) {
-    const result = type > 60 ? 60 * 60 : type * 60;
+  calculationSecondsParameters(value) {
+    const result = value > 60 ? 60 * 60 : value * 60;
 
     return result;
   }
@@ -247,16 +252,12 @@ class Pomodoro {
     this.inputLong.value = this.long / 60;
   }
 
-  updateParameters(permission) {
-    if (permission) {
-      this.pomodoro = this.calculationSecondsParameters(this.inputPomodoro.value);
-      this.short = this.calculationSecondsParameters(this.inputShort.value);
-      this.long = this.calculationSecondsParameters(this.inputLong.value);
+  updateParameters() {
+    this.pomodoro = this.calculationSecondsParameters(this.inputPomodoro.value);
+    this.short = this.calculationSecondsParameters(this.inputShort.value);
+    this.long = this.calculationSecondsParameters(this.inputLong.value);
 
-      this.totalTime = this[this.typeTimer];
-    }
-
-    this.distributionParameters();
+    this.totalTime = this[this.typeTimer];
   }
 
   saveParameters() {
@@ -286,16 +287,10 @@ class Pomodoro {
     });
   }
 
-  changeActiveButton(btn, typeTimer = null, click = false) {
+  changeActiveButton(btn) {
     this.removeClassActiveTimer();
 
     btn.classList.add('activeTimer');
-
-    if (click) {
-      this.typeTimer = typeTimer;
-      this.totalTime = this[typeTimer];
-      this.updateSeconds(typeTimer);
-    }
   }
 }
 
