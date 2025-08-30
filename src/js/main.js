@@ -10,6 +10,7 @@ class Pomodoro {
     this.totalTime = this.pomodoro;
     this.seconds = 0;
     this.interval = null;
+    this.notificationTimeout = null;
     this.typeTimer = 'pomodoro';
     this.numIterations = 0;
     this.circumference = 2 * Math.PI * 145;
@@ -29,6 +30,7 @@ class Pomodoro {
     this.innerTypesTimers = document.querySelector('.pomodoro__types-timers');
     this.notification = document.querySelector('.notification');
     this.notificationText = document.querySelector('.notification__text');
+    this.audioNotification = document.getElementById('audio-notification');
 
     this.btnsPomodoro = document.querySelectorAll('.pomodoro-btn');
 
@@ -98,7 +100,7 @@ class Pomodoro {
         this.progressCircle.style.strokeDashoffset = 0;
         this.changeTitleSite();
       } catch (err) {
-        this.showNotification(err);
+        this.changeTextNotification(true, err);
         this.distributionParameters();
       }
 
@@ -134,6 +136,7 @@ class Pomodoro {
         this.btnStart.classList.remove('active');
         this.changeIcon(false);
         this.changeTitleSite();
+        this.changeTextNotification(false);
       }
     });
   }
@@ -168,6 +171,8 @@ class Pomodoro {
     this.interval = setInterval(() => {
       if (this.seconds === 0) {
         this.switchTimer(this.typeTimer);
+        this.playNotificationSound();
+        this.changeTextNotification(false);
       } else {
         this.seconds = --this.seconds;
 
@@ -270,15 +275,51 @@ class Pomodoro {
     this.modalSettings.close();
   }
 
-  showNotification(err) {
-    this.notificationText.textContent = `${err.name}: ${err.message}`;
+  changeTextNotification(isError, text = null) {
+    setTimeout(() => {
+      if (isError) {
+        this.notificationText.textContent = `${text.name}: ${text.message}`;
+      } else {
+        switch (this.typeTimer) {
+          case 'pomodoro':
+            this.notificationText.textContent = 'Time to work';
+            break;
+
+          case 'short':
+            this.notificationText.textContent = 'Short rest';
+            break;
+
+          case 'long':
+            this.notificationText.textContent = 'Long rest';
+            break;
+
+          default:
+            break;
+        }
+      }
+    }, 200);
+
+    this.showNotification();
+  }
+
+  showNotification() {
+    clearTimeout(this.notificationTimeout);
 
     this.notification.classList.remove('active');
-    this.notification.classList.add('active');
 
     setTimeout(() => {
-      this.notification.classList.remove('active');
-    }, this.NOTIFICATION_DURATION);
+      this.notification.classList.add('active');
+
+      this.notificationTimeout = setTimeout(() => {
+        this.notification.classList.remove('active');
+      }, this.NOTIFICATION_DURATION);
+    }, 200);
+  }
+
+  playNotificationSound() {
+    this.audioNotification.volume = 0.5;
+
+    this.audioNotification.play();
   }
 
   removeClassActiveTimer() {
