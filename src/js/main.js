@@ -14,6 +14,11 @@ class Pomodoro {
     this.typeTimer = 'pomodoro';
     this.numIterations = 0;
     this.circumference = 2 * Math.PI * 145;
+    this.emojis = {
+      pomodoro: '🔴',
+      short: '🟡',
+      long: '🟢',
+    };
 
     this.progressCircle = document.querySelector('.pomodoro__timer-progress');
     this.timer = document.querySelector('.pomodoro__timer');
@@ -142,17 +147,7 @@ class Pomodoro {
   }
 
   changeTitleSite() {
-    document.title = `${this.getTimerEmoji(this.typeTimer)} ${this.calculationTiming()} | Pomodoro`;
-  }
-
-  getTimerEmoji(type) {
-    const emojis = {
-      pomodoro: '🔴',
-      short: '🟡',
-      long: '🟢',
-    };
-
-    return emojis[type];
+    document.title = `${this.emojis[this.typeTimer]} ${this.calculationTiming()} | Pomodoro`;
   }
 
   changeIcon(active) {
@@ -198,7 +193,9 @@ class Pomodoro {
   }
 
   switchTimer(type) {
-    if (type === 'pomodoro') {
+    const isTypePomodoro = type === 'pomodoro';
+
+    if (isTypePomodoro) {
       this.numIterations = ++this.numIterations;
       this.seconds = this.short;
       this.typeTimer = 'short';
@@ -316,8 +313,12 @@ class Pomodoro {
     }, 200);
   }
 
-  playNotificationSound() {
+  changeVolumeNotificationSound() {
     this.audioNotification.volume = 0.5;
+  }
+
+  playNotificationSound() {
+    this.changeVolumeNotificationSound();
 
     this.audioNotification.play();
   }
