@@ -52,13 +52,9 @@ class Pomodoro {
       const isClassActive = this.btnStart.classList.contains('active');
 
       if (isClassActive) {
-        this.btnStart.classList.remove('active');
-        this.stop();
-        this.changeIcon(false);
+        this.changeClassBtnStart(true);
       } else {
-        this.btnStart.classList.add('active');
-        this.start();
-        this.changeIcon(true);
+        this.changeClassBtnStart(false);
       }
     });
 
@@ -66,11 +62,8 @@ class Pomodoro {
       this.progressCircle.style.strokeDashoffset = 0;
 
       this.updateTimer('pomodoro');
-      this.stop();
       this.changeActiveButton(this.btnPomodoro);
-
-      this.btnStart.classList.remove('active');
-      this.changeIcon(false);
+      this.changeClassBtnStart(true);
       this.changeTitleSite();
     });
 
@@ -98,10 +91,7 @@ class Pomodoro {
         this.updateTimer('pomodoro');
         this.changeActiveButton(this.btnPomodoro);
         this.renderTimer();
-        this.stop();
-
-        this.btnStart.classList.remove('active');
-        this.changeIcon(false);
+        this.changeClassBtnStart(true);
         this.progressCircle.style.strokeDashoffset = 0;
         this.changeTitleSite();
       } catch (err) {
@@ -117,10 +107,10 @@ class Pomodoro {
     });
 
     this.innerTypesTimers.addEventListener('click', (e) => {
-      const isNotContainer = e.target !== this.innerTypesTimers;
+      const isContainer = e.target === this.innerTypesTimers;
       const isClassActiveTimer = e.target.classList.contains('activeTimer');
 
-      if (isNotContainer && !isClassActiveTimer) {
+      if (!isContainer && !isClassActiveTimer) {
         switch (e.target) {
           case this.btnPomodoro:
             this.changeActiveButton(this.btnPomodoro, 'pomodoro', true);
@@ -137,13 +127,23 @@ class Pomodoro {
         }
 
         this.progressCircle.style.strokeDashoffset = 0;
-        this.stop();
-        this.btnStart.classList.remove('active');
-        this.changeIcon(false);
+        this.changeClassBtnStart(true);
         this.changeTitleSite();
         this.changeTextNotification(false);
       }
     });
+  }
+
+  changeClassBtnStart(bool) {
+    if (bool) {
+      this.btnStart.classList.remove('active');
+      this.stop();
+      this.changeIcon(false);
+    } else {
+      this.btnStart.classList.add('active');
+      this.start();
+      this.changeIcon(true);
+    }
   }
 
   changeTitleSite() {
@@ -155,11 +155,7 @@ class Pomodoro {
     const useHref = use.getAttribute('href');
     const spritePath = useHref.split('#')[0];
 
-    if (active) {
-      this.btnStart.innerHTML = `<svg class="functional__icon"><use href="${spritePath}#start"></use></svg>`;
-    } else {
-      this.btnStart.innerHTML = `<svg class="functional__icon"><use href="${spritePath}#pause"></use></svg>`;
-    }
+    this.btnStart.innerHTML = `<svg class="functional__icon"><use href="${spritePath}${active ? '#start' : '#pause'}"></use></svg>`;
   }
 
   start() {
